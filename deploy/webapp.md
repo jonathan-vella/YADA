@@ -38,7 +38,7 @@ svcplan_sku=B1
 app_name_api=api-$random_suffix
 echo "Creating webapp for API..."
 az appservice plan create -n $svcplan_name -g $rg --sku $svcplan_sku --is-linux -o none
-az webapp create -n $app_name_api -g $rg -p $svcplan_name --deployment-container-image-name $api_image -o none
+az webapp create -n $app_name_api -g $rg -p $svcplan_name -c $api_image -o none
 az webapp config appsettings set -n $app_name_api -g $rg --settings "WEBSITES_PORT=8080" "SQL_SERVER_USERNAME=$sql_username" "SQL_SERVER_PASSWORD=$sql_password" "SQL_SERVER_FQDN=${sql_server_fqdn}" -o none
 az webapp restart -n $app_name_api -g $rg -o none
 app_url_api=$(az webapp show -n $app_name_api -g $rg --query defaultHostName -o tsv) && echo $app_url_api
@@ -62,7 +62,7 @@ Now you can deploy the web image:
 # Run on Web App
 app_name_web=web-$random_suffix
 echo "Creating webapp for frontend..."
-az webapp create -n $app_name_web -g $rg -p $svcplan_name --deployment-container-image-name $web_image -o none
+az webapp create -n $app_name_web -g $rg -p $svcplan_name -c $web_image -o none
 az webapp config appsettings set -n $app_name_web -g $rg --settings "API_URL=https://${app_url_api}" -o none
 az webapp restart -n $app_name_web -g $rg -o none
 app_url_web=$(az webapp show -n $app_name_web -g $rg --query defaultHostName -o tsv) && echo $app_url_web
